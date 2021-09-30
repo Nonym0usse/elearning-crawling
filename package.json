@@ -1,0 +1,31 @@
+{
+  "name": "learning-node",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "got": "^11.8.2",
+    "http-errors": "~1.6.3",
+    "json-as-xlsx": "^2.1.0",
+    "json-csv": "^4.0.2",
+    "json2xls": "^0.1.2",
+    "morgan": "~1.9.1",
+    "node-fetch": "^3.0.0",
+    "node-json-xlsx": "^0.2.2",
+    "node-libcurl": "^2.3.3",
+    "python-shell": "^3.0.0",
+    "read-excel-file": "^5.2.9",
+    "udacity-api": "^0.3.2",
+    "udemy-api": "^1.0.0",
+    "udemy-crawler": "^1.1.1",
+    "udemy-sdk": "^0.1.9",
+    "xlsx": "^0.17.1"
+  }
+}
