@@ -5,10 +5,16 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var udemy = require('./routes/udemy');
+var index = require('./routes/index');
 var courseraRouter = require('./routes/coursera');
 var codingApple = require('./routes/coding-apple');
 var goormedu = require('./routes/goormedu');
 var teamnova = require('./routes/teamnova');
+var inflearn = require('./routes/inflearn');
+var taling = require('./routes/taling');
+var youtube = require('./routes/youtube');
+var programmers = require('./routes/programmers');
+var codeacademy = require('./routes/code-academy');
 
 var app = express();
 
@@ -22,16 +28,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', index);
 app.use('/udemy', udemy);
 app.use('/coursera', courseraRouter);
 app.use('/coding-apple', codingApple);
 app.use('/goormedu', goormedu);
 app.use('/teamnova', teamnova);
+app.use('/inflearn', inflearn);
+app.use('/taling', taling);
+app.use('/youtube', youtube);
+app.use('/programmers', programmers);
+app.use('/code-academy', codeacademy);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  console.log("LOG");
-
   next(createError(404));
 });
 

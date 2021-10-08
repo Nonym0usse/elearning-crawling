@@ -37,6 +37,7 @@ function getTheUrl(data) {
   }
 
 async function requestAPIUdemy(url){
+    console.log('oui');
 
     return new Promise((resolve, reject) => {
         request.get({url: url}, function(err, res, body) {
