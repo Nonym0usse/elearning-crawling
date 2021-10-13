@@ -21,7 +21,7 @@ router.get('/catalog', function(req, res, next) {
           fs.unlinkSync(exceloutput)
       });
     } else {
-     console.log("Number of pages exceed the limit");
+      res.sendStatus(404);
     }
   });
   

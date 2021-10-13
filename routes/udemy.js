@@ -3,16 +3,14 @@ var router = express.Router();
 var request = require('request')
 var json2xls = require('json2xls');
 var fs = require('fs');
-var Catalog = require('udacity-api').Catalog;
-var User = require('udacity-api').User;
 
 var xlsData = [];
 var mergedata = [];
 
 
-router.get('/catalog', function(req, res, next) {
-  for(var i = 1; i <= 100; i++){
-    xlsData.push(requestAPIUdemy(getTheUrl(i)));
+router.get('/catalog/:number', function(req, res, next) {
+  for(var i = 1; i <= req.params.number; i++){
+    xlsData.push(requestUrl(getTheUrl(i)));
   }
 
   Promise.all(xlsData).then(function(data){ 
@@ -30,7 +28,8 @@ router.get('/catalog', function(req, res, next) {
           }
           fs.unlinkSync(exceloutput)
       });
-  }).catch(function(err){ console.log(err) });
+
+  }).catch(function(){ res.sendStatus(404) });
 });
 
 
@@ -39,8 +38,7 @@ function getTheUrl(data) {
   return url
 }
 
-async function requestAPIUdemy(url){
-  console.log(url);
+async function requestUrl(url){
   var auth = 'Basic ' + new Buffer.from("0a8TTztD0AWTxhJzcYvfytXXy1cOV4rHSmxiDBfZ:d6A9A7VM4exknwp0TnpsrGQyzt9FLRxZR5l3e8DT4p4zQxT0Nf7xfIiFigps1mhOI6zkp6M2YNeLoz7KaR3NwHtkWA6bHgS8kdnKW9SQbk4hJ4vswuZd0GcOd6gPTkqT").toString('base64');
   return new Promise((resolve, reject) => {
     request.get({url: url, headers: {"Authorization": auth}}, async function(error, response, body) {
@@ -48,7 +46,7 @@ async function requestAPIUdemy(url){
         const json = JSON.parse(body);
         resolve(json.results);
       } else {
-       console.log("Number of pages exceed the limit");
+        reject('error');
       }
     });
   });

@@ -3,8 +3,8 @@ var router = express.Router();
 var request = require('request')
 var json2xls = require('json2xls');
 var fs = require('fs');
-var Crawling = require('../models/Crawling.js')
 const cheerio = require('cheerio');
+var Crawling = require('../models/Crawling.js')
 var xlsData = [];
 var mergedata = [];
 
@@ -19,7 +19,7 @@ router.get('/catalog/:number', function(req, res, next) {
           mergedata = mergedata.concat(data[i]);
         }
         var xls = json2xls(mergedata);
-         var exceloutput = Date.now() + "-goormedu-output.xlsx"
+        var exceloutput = Date.now() + "-programmers.co.kr-output.xlsx"
           fs.writeFileSync(exceloutput, xls, 'binary');
           res.download(exceloutput,(err) =>  {
               if(err){
@@ -28,41 +28,37 @@ router.get('/catalog/:number', function(req, res, next) {
               }
               fs.unlinkSync(exceloutput)
           });
-      }).catch(function(){  res.sendStatus(404) });
-    
+      }).catch(function(){ res.sendStatus(404) });
 });
 
-function getTheUrl(data) {
-    var url = "https://edu.goorm.io/category/programming?page="+data+"&sort=newest";
+function getTheUrl() {
+    var url = "https://programmers.co.kr/learn";
     return url
-  }
+}
 
 async function requestAPI(url){
     return new Promise((resolve, reject) => {
         request.get({url: url}, function(err, res, body) {
             if(err)
             {
-                reject(err);
+               reject(err);
             }
             else
             {
                 const arr = [];
                 let $ = cheerio.load(body);
-                $('div.Aj2j_L>div').each(function(){
-                    const image = $(this).find('div._2hZilU>a._1xnzzp>div._2tXzr4>div._31ylS5>img._3PxZMG').attr('data-src');
-                    const title = $(this).find('div._2hZilU>a._1xnzzp>div._2tXzr4>div._3pJh0l>div._3sSCLc').text();
-                    const description = $(this).find('div._2hZilU>a._1xnzzp>div._2tXzr4>div.obzTi8>div._34faef').text();
-                    const price = $(this).find('div._2hZilU>a._1xnzzp>div._2tXzr4>div.RfUd-z>div.NUcMu0>span._3vh60A').text();
-                    const number_pers = $(this).find('div._2hZilU>a._1xnzzp>div._2tXzr4>div._3pJh0l>div._3SzRPA>div._3CQYzi>div._1kTxrO>span').text();
-                    const category = $(this).find('div._2hZilU>a._1xnzzp>div._2tXzr4>div._3pJh0l>div._3SzRPA>div.xaJHLa').text();
-
-                    var crawling = new Crawling(title, image, price, description, number_pers, category);
+                $('div.container>div.courses>li').each(function(){
+                    const img = $(this).find('li.col-item>a.list-item>div.course__thumb>img').attr('src');
+                    const title = $(this).find('li.col-item>a.list-item>div.course__body>h4').text();
+                    const price = $(this).find('li.col-item>a.list-item>div.course__price>h5.price>span.price').text();
+                    const description = $(this).find('li.col-item>a.list-item>div.course__body>h6.description').text();
+                    const number_pers = $(this).find('li.col-item>a.list-item>div.course__body>h6.statuts>span.lesson-quantity>svg').text();
+                    var crawling = new Crawling(title, img, price, description, number_pers);
                     crawling.setTitle(title);
-                    crawling.setImg(image);
+                    crawling.setImg(img);
                     crawling.setPrice(price);
                     crawling.setDescription(description);
                     crawling.setPersonNumber(number_pers);
-                    crawling.setCategory(category)
 
                     arr.push(crawling);
                     resolve(arr);

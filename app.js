@@ -14,7 +14,6 @@ var inflearn = require('./routes/inflearn');
 var taling = require('./routes/taling');
 var youtube = require('./routes/youtube');
 var programmers = require('./routes/programmers');
-var codeacademy = require('./routes/code-academy');
 
 var app = express();
 
@@ -38,7 +37,6 @@ app.use('/inflearn', inflearn);
 app.use('/taling', taling);
 app.use('/youtube', youtube);
 app.use('/programmers', programmers);
-app.use('/code-academy', codeacademy);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

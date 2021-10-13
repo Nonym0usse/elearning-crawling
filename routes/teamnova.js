@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 var request = require('request')
 var json2xls = require('json2xls');
+var Crawling = require('../models/Crawling.js')
 var fs = require('fs');
 const cheerio = require('cheerio');
 
 router.get('/catalog', function(req, res, next) {
-    requestAPIUdemy().then(function(data){
-        console.log(data);
+    requestUrl().then(function(data){
        var xls = json2xls(data);
         var exceloutput = Date.now() + "-team-nova-light-output.xlsx"
          fs.writeFileSync(exceloutput, xls, 'binary');
@@ -18,35 +18,33 @@ router.get('/catalog', function(req, res, next) {
              }
              fs.unlinkSync(exceloutput)
          });
-    });
-    
+        }).catch(function(){ res.sendStatus(404)});
 });
 
-async function requestAPIUdemy(){
+async function requestUrl(){
     const URL = "https://www.teamnovalight.co.kr/lecture_list.php";
 
     return new Promise((resolve, reject) => {
         request.get({url: URL}, function(err, res, body) {
-            console.log('ok');
             if(err)
             {
-                console.log(err);
+                reject(err);
             }
             else
             {
                 const arr = [];
                 let $ = cheerio.load(body);
-                $('div.single-grid-view>div').each(function(index){
+                $('div.single-grid-view>div').each(function(){
                     const image = "https://www.teamnovalight.co.kr/" + $(this).find('div.col-md-4>div.category>div.ht__cat__thumb>a>img').attr('src');
                     const title = $(this).find('div.col-md-4>div.category>div.fr__product__inner>h4').text();
                     const price = $(this).find('div.col-md-4>div.category>div.fr__product__inner>ul.fr__pro__prize>li').text();
     
-                    const obj = {
-                        image: image,
-                        title : title,
-                        price: price,
-                    };
-                    arr.push(obj);
+                    var crawling = new Crawling(title, image, price);
+                    crawling.setTitle(title);
+                    crawling.setImg(image);
+                    crawling.setPrice(price);
+
+                    arr.push(crawling);
                     resolve(arr);
                 });
             }
