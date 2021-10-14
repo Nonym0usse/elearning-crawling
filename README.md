@@ -23,6 +23,9 @@ npm install
 /YouTube/catalog/:type
 /programmers/catalog/:number
 /code-academy/catalog
+/edwith/catalog
+/fastcampus/catalog
+/kocw/catalog
 
 //:number -> numbers of pages to crawl
 //: type -> type of search category need
